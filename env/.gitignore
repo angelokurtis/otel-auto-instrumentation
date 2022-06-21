@@ -10,6 +10,7 @@
 .terraformrc
 crash.*.log
 crash.log
+otel-config
 override.tf
 override.tf.json
 terraform.rc
