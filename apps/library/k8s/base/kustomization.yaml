@@ -4,3 +4,7 @@ resources:
 - deployment.yaml
 - service.yaml
 - ingress.yaml
+images:
+- digest: sha256:2f5077ee60bee092b1072423ff1477cc0160d90437b3bfc13ded24e01a1bca17
+  name: library
+  newName: kurtis/library:0.0.1
