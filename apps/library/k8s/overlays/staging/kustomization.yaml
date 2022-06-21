@@ -8,5 +8,3 @@ configMapGenerator:
   - name: otel
     envs:
       - staging.env
-generatorOptions:
-  disableNameSuffixHash: true
