@@ -1,18 +1,3 @@
-resource "kubectl_manifest" "jaeger_helm_repository" {
-  yaml_body = <<YAML
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
-metadata:
-  name: jaeger
-  namespace: ${kubernetes_namespace.jaeger.metadata[0].name}
-spec:
-  interval: ${local.flux.default_interval}
-  url: https://jaegertracing.github.io/helm-charts
-YAML
-
-  depends_on = [kubectl_manifest.fluxcd]
-}
-
 resource "kubectl_manifest" "jaeger_operator_helm_release" {
   yaml_body = <<YAML
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
@@ -21,25 +6,50 @@ metadata:
   name: jaeger-operator
   namespace: ${kubernetes_namespace.jaeger.metadata[0].name}
 spec:
-  interval: ${local.flux.default_interval}
+  interval: ${local.fluxcd.default_interval}
   chart:
     spec:
       chart: jaeger-operator
       sourceRef:
         kind: HelmRepository
         name: jaeger
+        namespace: ${kubernetes_namespace.fluxcd.metadata[0].name}
   values:
     rbac:
       clusterRole: true
+    extraEnv:
+      - name: LOG-LEVEL
+        value: debug
   dependsOn:
     - name: cert-manager
       namespace: ${kubernetes_namespace.cert_manager.metadata[0].name}
+    - name: cassandra
+      namespace: ${kubernetes_namespace.cassandra.metadata[0].name}
 YAML
 
   depends_on = [
     kubectl_manifest.fluxcd,
     kubectl_manifest.jaeger_helm_repository
   ]
+}
+
+data "kubernetes_secret_v1" "cassandra" {
+  metadata {
+    name      = "cassandra"
+    namespace = kubernetes_namespace.cassandra.metadata[0].name
+  }
+  depends_on = [kubectl_manifest.jaeger_operator_helm_release]
+}
+
+resource "kubernetes_secret_v1" "cassandra" {
+  metadata {
+    name      = "cassandra"
+    namespace = kubernetes_namespace.jaeger.metadata[0].name
+  }
+  data = {
+    CASSANDRA_USERNAME = "cassandra"
+    CASSANDRA_PASSWORD = data.kubernetes_secret_v1.cassandra.data.cassandra-password
+  }
 }
 
 resource "kubectl_manifest" "jaeger" {
@@ -55,11 +65,15 @@ spec:
     hosts:
       - ${local.jaeger.query.host}
     ingressClassName: traefik
+  strategy: production
   storage:
-    type: memory
-  strategy: allinone
-  allInOne:
-    image: jaegertracing/all-in-one:1.35.2
+    type: cassandra
+    options:
+      cassandra:
+        servers: cassandra.cassandra.svc.cluster.local
+        port: 9042
+        keyspace: ${local.jaeger.storage.keyspace}
+    secretName: ${kubernetes_secret_v1.cassandra.metadata[0].name}
 YAML
 
   depends_on = [
@@ -67,30 +81,6 @@ YAML
     kubectl_manifest.jaeger_operator_helm_release,
     kubernetes_job_v1.wait_jaeger_crds
   ]
-}
-
-resource "kubectl_manifest" "jaeger_collector_ingress" {
-  yaml_body = <<YAML
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: jaeger-collector
-  namespace: ${kubernetes_namespace.jaeger.metadata[0].name}
-spec:
-  ingressClassName: traefik
-  rules:
-    - host: ${local.jaeger.collector.host}
-      http:
-        paths:
-          - backend:
-              service:
-                name: jaeger-collector
-                port:
-                  number: 14268
-            pathType: ImplementationSpecific
-YAML
-
-  depends_on = [kubectl_manifest.jaeger]
 }
 
 resource "kubernetes_job_v1" "wait_jaeger_crds" {

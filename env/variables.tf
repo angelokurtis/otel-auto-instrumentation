@@ -28,3 +28,7 @@ variable "cert_manager_namespace" {
 variable "opentelemetry_namespace" {
   default = "opentelemetry"
 }
+
+variable "cassandra_namespace" {
+  default = "cassandra"
+}
