@@ -23,8 +23,8 @@ up: init ## Starts a Kubernetes cluster running local using Docker containers an
 
 .PHONY: down
 down: clean ## Uninstall all solution components and destroy the local Kubernetes cluster
-	kind delete clusters flux
+	kind delete clusters otel
 
 .PHONY: clean
 clean: ## Removing all Terraform generated config files
-	rm -rf .terraform .terraform.lock.hcl terraform.tfstate* flux-config
+	rm -rf .terraform .terraform.lock.hcl terraform.tfstate* otel-config
