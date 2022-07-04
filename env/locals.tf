@@ -13,4 +13,7 @@ locals {
     collector = { host = "jaeger-collector.${local.cluster_host}" }
     storage   = { keyspace = "jaeger_v1_test" }
   }
+  opentelemetry = {
+    operator = { version = "0.54.0" }
+  }
 }
