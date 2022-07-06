@@ -119,10 +119,6 @@ resource "kubernetes_job_v1" "wait_jaeger_crds" {
   ]
 }
 
-data "kubectl_server_version" "current" {
-  depends_on = [kind_cluster.otel]
-}
-
 resource "kubernetes_service_account_v1" "jaeger_kubectl" {
   metadata {
     name      = "kubectl"

@@ -41,3 +41,7 @@ resource "kind_cluster" "otel" {
     }
   }
 }
+
+data "kubectl_server_version" "current" {
+  depends_on = [kind_cluster.otel]
+}
