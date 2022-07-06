@@ -9,6 +9,7 @@ locals {
     source_controller = { host = "source-controller.${local.cluster_host}" }
   }
   jaeger = {
+    version   = "1.36.0"
     query     = { host = "jaeger.${local.cluster_host}" }
     collector = { host = "jaeger-collector.${local.cluster_host}" }
     storage   = { keyspace = "jaeger_v1_test" }

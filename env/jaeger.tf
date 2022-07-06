@@ -18,12 +18,12 @@ spec:
     rbac:
       clusterRole: true
     extraEnv:
-      - name: LOG_LEVEL
+      - name: LOG-LEVEL
         value: debug
-      - name: ES_PROVISION
-        value: no
-      - name: KAFKA_PROVISION
-        value: no
+      - name: ES-PROVISION
+        value: "no"
+      - name: KAFKA-PROVISION
+        value: "no"
   dependsOn:
     - name: cert-manager
       namespace: ${kubernetes_namespace.cert_manager.metadata[0].name}
@@ -56,14 +56,22 @@ metadata:
   name: jaeger
   namespace: ${kubernetes_namespace.jaeger.metadata[0].name}
 spec:
+  strategy: production
   ingress:
     enabled: true
     hosts:
       - ${local.jaeger.query.host}
     ingressClassName: traefik
-  strategy: production
+  agent:
+    image: jaegertracing/jaeger-agent:${local.jaeger.version}
+  collector:
+    image: jaegertracing/jaeger-collector:${local.jaeger.version}
+  query:
+    image: jaegertracing/jaeger-query:${local.jaeger.version}
   storage:
     type: cassandra
+    cassandraCreateSchema:
+      image: jaegertracing/jaeger-cassandra-schema:${local.jaeger.version}
     options:
       cassandra:
         servers: cassandra.cassandra.svc.cluster.local
