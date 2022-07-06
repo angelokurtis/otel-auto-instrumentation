@@ -18,8 +18,12 @@ spec:
     rbac:
       clusterRole: true
     extraEnv:
-      - name: LOG-LEVEL
+      - name: LOG_LEVEL
         value: debug
+      - name: ES_PROVISION
+        value: no
+      - name: KAFKA_PROVISION
+        value: no
   dependsOn:
     - name: cert-manager
       namespace: ${kubernetes_namespace.cert_manager.metadata[0].name}
@@ -33,22 +37,14 @@ YAML
   ]
 }
 
-data "kubernetes_secret_v1" "cassandra" {
+resource "kubernetes_secret_v1" "storage_credentials" {
   metadata {
-    name      = "cassandra"
-    namespace = kubernetes_namespace.cassandra.metadata[0].name
-  }
-  depends_on = [kubectl_manifest.jaeger_operator_helm_release]
-}
-
-resource "kubernetes_secret_v1" "cassandra" {
-  metadata {
-    name      = "cassandra"
+    name      = "storage-credentials"
     namespace = kubernetes_namespace.jaeger.metadata[0].name
   }
   data = {
     CASSANDRA_USERNAME = "cassandra"
-    CASSANDRA_PASSWORD = data.kubernetes_secret_v1.cassandra.data.cassandra-password
+    CASSANDRA_PASSWORD = random_password.cassandra.result
   }
 }
 
@@ -73,7 +69,7 @@ spec:
         servers: cassandra.cassandra.svc.cluster.local
         port: 9042
         keyspace: ${local.jaeger.storage.keyspace}
-    secretName: ${kubernetes_secret_v1.cassandra.metadata[0].name}
+    secretName: ${kubernetes_secret_v1.storage_credentials.metadata[0].name}
 YAML
 
   depends_on = [
