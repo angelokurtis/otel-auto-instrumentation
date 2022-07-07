@@ -43,16 +43,16 @@ YAML
   depends_on = [kubectl_manifest.fluxcd]
 }
 
-resource "kubectl_manifest" "bitnami_helm_repository" {
+resource "kubectl_manifest" "opensearch_helm_repository" {
   yaml_body = <<YAML
 apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
 metadata:
-  name: bitnami
+  name: opensearch
   namespace: ${kubernetes_namespace.fluxcd.metadata[0].name}
 spec:
   interval: ${local.fluxcd.default_interval}
-  url: https://charts.bitnami.com/bitnami
+  url: https://opensearch-project.github.io/helm-charts
 YAML
 
   depends_on = [kubectl_manifest.fluxcd]

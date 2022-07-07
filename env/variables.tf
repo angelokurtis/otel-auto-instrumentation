@@ -32,3 +32,7 @@ variable "opentelemetry_namespace" {
 variable "cassandra_namespace" {
   default = "cassandra"
 }
+
+variable "opensearch_namespace" {
+  default = "opensearch"
+}
