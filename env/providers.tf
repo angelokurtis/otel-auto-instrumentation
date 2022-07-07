@@ -1,10 +1,10 @@
 terraform {
   required_providers {
-    aws        = { source = "hashicorp/aws", version = ">= 4.18.0, < 4.19.0" }
-    docker     = { source = "kreuzwerker/docker", version = ">= 2.16.0, < 2.17.0" }
-    kind       = { source = "tehcyx/kind", version = ">= 0.0.12, < 0.1.0" }
-    flux       = { source = "fluxcd/flux", version = ">= 0.15.1, < 0.16.0" }
-    kubernetes = { source = "hashicorp/kubernetes", version = ">= 2.11.0, < 2.12.0" }
+    aws        = { source = "hashicorp/aws", version = ">= 4.21.0, < 4.22.0" }
+    docker     = { source = "kreuzwerker/docker", version = ">= 2.17.0, < 2.18.0" }
+    kind       = { source = "tehcyx/kind", version = ">= 0.0.13, < 0.1.0" }
+    flux       = { source = "fluxcd/flux", version = ">= 0.15.3, < 0.16.0" }
+    kubernetes = { source = "hashicorp/kubernetes", version = ">= 2.12.1, < 2.13.0" }
     kubectl    = { source = "gavinbunney/kubectl", version = ">= 1.14.0, < 1.15.0" }
   }
   required_version = ">= 1.0"
