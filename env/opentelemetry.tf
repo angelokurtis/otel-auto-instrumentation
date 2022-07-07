@@ -18,6 +18,9 @@ spec:
       newName: ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator
       newTag: ${local.opentelemetry.operator.version}
   targetNamespace: ${kubernetes_namespace.opentelemetry.metadata[0].name}
+  dependsOn:
+    - name: cert-manager
+      namespace: ${kubernetes_namespace.cert_manager.metadata[0].name}
 YAML
 
   depends_on = [
