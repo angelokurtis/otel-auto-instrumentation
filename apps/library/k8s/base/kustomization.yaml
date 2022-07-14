@@ -5,6 +5,6 @@ resources:
 - service.yaml
 - ingress.yaml
 images:
-- digest: sha256:2f5077ee60bee092b1072423ff1477cc0160d90437b3bfc13ded24e01a1bca17
+- digest: sha256:28678e3fe8be64e776faf37c35a1321b47fcea6d086e1b8a89bce6ee38c18688
   name: library
-  newName: kurtis/library:0.0.1
+  newName: kurtis/library
