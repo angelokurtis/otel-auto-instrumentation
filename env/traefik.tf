@@ -36,6 +36,8 @@ spec:
         namespaces:
           - default
           - ${kubernetes_namespace.traefik.metadata[0].name}
+        publishedService:
+          enabled: true
     service:
       type: NodePort
 YAML

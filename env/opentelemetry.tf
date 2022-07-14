@@ -1,23 +1,20 @@
 resource "kubectl_manifest" "opentelemetry_operator_helm_release" {
   yaml_body = <<YAML
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
-kind: Kustomization
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
 metadata:
   name: opentelemetry-operator
   namespace: ${kubernetes_namespace.opentelemetry.metadata[0].name}
 spec:
   interval: ${local.fluxcd.default_interval}
-  prune: true
-  path: config/default
-  sourceRef:
-    kind: GitRepository
-    name: opentelemetry-operator
-    namespace: ${kubernetes_namespace.fluxcd.metadata[0].name}
-  images:
-    - name: controller
-      newName: ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator
-      newTag: ${local.opentelemetry.operator.version}
-  targetNamespace: ${kubernetes_namespace.opentelemetry.metadata[0].name}
+  chart:
+    spec:
+      chart: opentelemetry-operator
+      sourceRef:
+        kind: HelmRepository
+        name: opentelemetry
+        namespace: ${kubernetes_namespace.fluxcd.metadata[0].name}
+  values: {}
   dependsOn:
     - name: cert-manager
       namespace: ${kubernetes_namespace.cert_manager.metadata[0].name}
@@ -25,7 +22,7 @@ YAML
 
   depends_on = [
     kubectl_manifest.fluxcd,
-    kubectl_manifest.opentelemetry_operator_git_repository
+    kubectl_manifest.jaeger_helm_repository
   ]
 }
 
@@ -92,7 +89,9 @@ resource "kubernetes_job_v1" "wait_opentelemetry_crds" {
         container {
           name  = "kubectl"
           image = "docker.io/bitnami/kubectl:${data.kubectl_server_version.current.major}.${data.kubectl_server_version.current.minor}"
-          args  = ["wait", "--for=condition=Ready", "kustomization/opentelemetry-operator", "--timeout", local.default_timeouts]
+          args  = [
+            "wait", "--for=condition=Ready", "helmrelease/opentelemetry-operator", "--timeout", local.default_timeouts
+          ]
         }
         restart_policy = "Never"
       }
@@ -106,7 +105,7 @@ resource "kubernetes_job_v1" "wait_opentelemetry_crds" {
   }
 
   depends_on = [
-    kubernetes_role_binding_v1.kubectl_opentelemetry_kustomizations_reader,
+    kubernetes_role_binding_v1.kubectl_opentelemetry_helmreleases_reader,
     kubectl_manifest.opentelemetry_operator_helm_release,
   ]
 }
@@ -118,27 +117,27 @@ resource "kubernetes_service_account_v1" "opentelemetry_kubectl" {
   }
 }
 
-resource "kubernetes_role_v1" "opentelemetry_kustomizations_reader" {
+resource "kubernetes_role_v1" "opentelemetry_helmreleases_reader" {
   metadata {
-    name      = "opentelemetry-kustomizations-reader"
+    name      = "opentelemetry-helmreleases-reader"
     namespace = kubernetes_namespace.opentelemetry.metadata[0].name
   }
   rule {
-    api_groups = ["kustomize.toolkit.fluxcd.io"]
-    resources  = ["kustomizations"]
+    api_groups = ["helm.toolkit.fluxcd.io"]
+    resources  = ["helmreleases"]
     verbs      = ["get", "list", "watch"]
   }
 }
 
-resource "kubernetes_role_binding_v1" "kubectl_opentelemetry_kustomizations_reader" {
+resource "kubernetes_role_binding_v1" "kubectl_opentelemetry_helmreleases_reader" {
   metadata {
-    name      = "kubectl-opentelemetry-kustomizations-reader"
+    name      = "kubectl-opentelemetry-helmreleases-reader"
     namespace = kubernetes_namespace.opentelemetry.metadata[0].name
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "Role"
-    name      = kubernetes_role_v1.opentelemetry_kustomizations_reader.metadata[0].name
+    name      = kubernetes_role_v1.opentelemetry_helmreleases_reader.metadata[0].name
   }
   subject {
     kind      = "ServiceAccount"

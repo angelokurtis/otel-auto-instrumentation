@@ -10,11 +10,13 @@ spec:
   chart:
     spec:
       chart: opensearch
+      version: 1.8.3
       sourceRef:
         kind: HelmRepository
         name: opensearch
         namespace: ${kubernetes_namespace.fluxcd.metadata[0].name}
   values:
+    replicas: 2
     protocol: http
     config:
       opensearch.yml: |
@@ -43,6 +45,7 @@ spec:
   chart:
     spec:
       chart: opensearch-dashboards
+      version: 1.2.2
       sourceRef:
         kind: HelmRepository
         name: opensearch
