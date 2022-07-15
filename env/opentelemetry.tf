@@ -22,7 +22,7 @@ YAML
 
   depends_on = [
     kubectl_manifest.fluxcd,
-    kubectl_manifest.jaeger_helm_repository
+    kubectl_manifest.jaeger_helm_release
   ]
 }
 

@@ -9,9 +9,9 @@ spec:
   interval: ${local.fluxcd.default_interval}
   chart:
     spec:
-      chart: jaeger
+      chart: charts/jaeger
       sourceRef:
-        kind: HelmRepository
+        kind: GitRepository
         name: jaeger
         namespace: ${kubernetes_namespace.fluxcd.metadata[0].name}
   values:
@@ -54,7 +54,7 @@ YAML
 
   depends_on = [
     kubectl_manifest.fluxcd,
-    kubectl_manifest.jaeger_helm_repository
+    kubectl_manifest.jaeger_git_repository
   ]
 }
 
