@@ -48,8 +48,8 @@ spec:
         timeout: 1s
     
     exporters:
-      otlp:
-        endpoint: opentelemetry-collector.${kubernetes_namespace.opentelemetry.metadata[0].name}.svc.cluster.local:4317
+      jaeger:
+        endpoint: jaeger-collector.${kubernetes_namespace.jaeger.metadata[0].name}.svc.cluster.local:14250
         tls:
           insecure: true
     
@@ -58,15 +58,7 @@ spec:
         traces:
           receivers: [ otlp ]
           processors: [ batch ]
-          exporters: [ otlp ]
-        metrics:
-          receivers: [ otlp ]
-          processors: [ batch ]
-          exporters: [ otlp ]
-        logs:
-          receivers: [ otlp ]
-          processors: [ batch ]
-          exporters: [ otlp ]
+          exporters: [ jaeger ]
 YAML
 
   depends_on = [
