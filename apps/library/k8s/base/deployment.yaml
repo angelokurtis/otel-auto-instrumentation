@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: library
-          image: kurtis/library:0.0.1
+          image: library
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

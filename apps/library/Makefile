@@ -9,17 +9,22 @@ help: ## Display this help.
 
 .DEFAULT_GOAL := help
 
+.PHONY: release
+release: ## Bump A Patch Version.
+	./mvnw validate -DbumpPatch
+
 .PHONY: build
 build: ## Build the docker image.
-	DOCKER_BUILDKIT=1 docker build -t kurtis/library:0.0.1 .
+	VERSION=$(shell ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout); \
+	DOCKER_BUILDKIT=1 docker build -t kurtis/library:$$VERSION .
 
 .PHONY: publish
 publish: ## Push docker image with the manager.
-	kind load docker-image kurtis/library:0.0.1 --name otel
+	VERSION=$(shell ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout); \
+	kind load docker-image kurtis/library:$$VERSION --name otel
 
 .PHONY: deploy
 deploy: build publish ## Deploy app to the K8s cluster specified in ~/.kube/config.
-	DIGEST=$(shell docker inspect --format='{{.Id}}' kurtis/library:0.0.1); \
-	cd k8s/base && kustomize edit set image library=kurtis/library@$$DIGEST
+	VERSION=$(shell ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout); \
+	cd k8s/base && kustomize edit set image library=kurtis/library:$$VERSION
 	kustomize build k8s/base | kubectl apply -f -
-	kubectl rollout restart deployment library
