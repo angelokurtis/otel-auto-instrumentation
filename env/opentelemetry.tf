@@ -26,12 +26,12 @@ YAML
   ]
 }
 
-resource "kubectl_manifest" "open_telemetry_collector_helm_release" {
+resource "kubectl_manifest" "opentelemetry_collector" {
   yaml_body = <<YAML
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
-  name: open-telemetry-collector
+  name: default
   namespace: ${kubernetes_namespace.opentelemetry.metadata[0].name}
 spec:
   mode: deployment
