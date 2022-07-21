@@ -11,6 +11,11 @@ spec:
   sampler:
     type: parentbased_traceidratio
     argument: "0.25"
+  java:
+    image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java:1.11.1
+    env:
+      - name: OTEL_METRICS_EXPORTER
+        value: otlp
 YAML
 
   depends_on = [
