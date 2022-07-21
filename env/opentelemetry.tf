@@ -48,17 +48,24 @@ spec:
         timeout: 1s
     
     exporters:
-      jaeger:
-        endpoint: jaeger-collector.${kubernetes_namespace.jaeger.metadata[0].name}.svc.cluster.local:14250
+      otlp:
+        endpoint: jaeger-collector.${kubernetes_namespace.jaeger.metadata[0].name}.svc.cluster.local:${local.jaeger.collector.otlp.port}
         tls:
           insecure: true
-    
+
+      prometheus:
+        endpoint: "localhost:8889"
+
     service:
       pipelines:
         traces:
           receivers: [ otlp ]
           processors: [ batch ]
-          exporters: [ jaeger ]
+          exporters: [ otlp ]
+        metrics:
+          receivers: [ otlp ]
+          processors: [ batch ]
+          exporters: [ prometheus ]
 YAML
 
   depends_on = [

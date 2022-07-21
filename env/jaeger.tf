@@ -9,9 +9,9 @@ spec:
   interval: ${local.fluxcd.default_interval}
   chart:
     spec:
-      chart: charts/jaeger
+      chart: jaeger
       sourceRef:
-        kind: GitRepository
+        kind: HelmRepository
         name: jaeger
         namespace: ${kubernetes_namespace.fluxcd.metadata[0].name}
   values:
@@ -20,6 +20,10 @@ spec:
     collector:
       cmdlineParams:
         log-level: debug
+      service:
+        otlp:
+          grpc:
+            port: ${local.jaeger.collector.otlp.port}
     query:
       cmdlineParams:
         log-level: debug
@@ -54,7 +58,7 @@ YAML
 
   depends_on = [
     kubectl_manifest.fluxcd,
-    kubectl_manifest.jaeger_git_repository
+    kubectl_manifest.jaeger_helm_release
   ]
 }
 

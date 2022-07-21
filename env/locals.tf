@@ -4,12 +4,13 @@ locals {
   kind             = { version = "v1.21.12" }
   fluxcd           = {
     version           = "v0.31.3"
-    default_interval  = "10s"
+    default_interval  = "5s"
     default_timeout   = "5m"
     source_controller = { host = "source-controller.${local.cluster_host}" }
   }
   jaeger = {
-    query = { host = "jaeger.${local.cluster_host}" }
+    query     = { host = "jaeger.${local.cluster_host}" }
+    collector = { otlp = { port = 4317 } }
   }
   opensearch = {
     dashboard = { host = "opensearch.${local.cluster_host}" }
