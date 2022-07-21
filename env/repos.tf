@@ -13,23 +13,16 @@ YAML
   depends_on = [kubectl_manifest.fluxcd]
 }
 
-resource "kubectl_manifest" "jaeger_git_repository" {
+resource "kubectl_manifest" "jaeger_helm_repository" {
   yaml_body = <<YAML
 apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: GitRepository
+kind: HelmRepository
 metadata:
   name: jaeger
   namespace: ${kubernetes_namespace.fluxcd.metadata[0].name}
 spec:
   interval: ${local.fluxcd.default_interval}
-  url: https://github.com/angelokurtis/helm-charts
-  ref:
-    branch: main
-  ignore: |
-    # exclude all
-    /*
-    # include deploy dir
-    !/charts/jaeger
+  url: https://jaegertracing.github.io/helm-charts
 YAML
 
   depends_on = [kubectl_manifest.fluxcd]
