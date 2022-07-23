@@ -3,7 +3,7 @@ locals {
   default_timeouts = "5m"
   kind             = { version = "v1.21.12" }
   fluxcd           = {
-    version           = "v0.31.3"
+    version           = "v0.31.4"
     default_interval  = "5s"
     default_timeout   = "5m"
     source_controller = { host = "source-controller.${local.cluster_host}" }
@@ -13,6 +13,6 @@ locals {
     collector = { otlp = { port = 4317 } }
   }
   opensearch = {
-    dashboard = { host = "opensearch.${local.cluster_host}" }
+    host = "opensearch.${local.cluster_host}"
   }
 }

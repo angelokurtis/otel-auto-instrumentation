@@ -58,7 +58,8 @@ YAML
 
   depends_on = [
     kubectl_manifest.fluxcd,
-    kubectl_manifest.jaeger_helm_release
+    kubectl_manifest.jaeger_helm_release,
+    kubectl_manifest.opensearch_helm_release
   ]
 }
 
