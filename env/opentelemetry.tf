@@ -54,7 +54,7 @@ spec:
           insecure: true
 
       prometheus:
-        endpoint: "localhost:8889"
+        endpoint: "0.0.0.0:8889"
 
     service:
       pipelines:

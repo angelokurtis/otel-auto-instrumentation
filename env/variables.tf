@@ -36,3 +36,7 @@ variable "cassandra_namespace" {
 variable "opensearch_namespace" {
   default = "opensearch"
 }
+
+variable "prometheus_namespace" {
+  default = "prometheus"
+}
