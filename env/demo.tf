@@ -9,13 +9,12 @@ spec:
   exporter:
     endpoint: http://default-collector.${kubernetes_namespace.opentelemetry.metadata[0].name}.svc.cluster.local:4317
   sampler:
-    type: parentbased_traceidratio
-    argument: "0.25"
+    type: parentbased_always_on
   java:
-    image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java:1.11.1
+    image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java:1.16.0
     env:
       - name: OTEL_METRICS_EXPORTER
-        value: otlp
+        value: prometheus
 YAML
 
   depends_on = [
