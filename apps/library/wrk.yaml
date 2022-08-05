@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: wrk-
+  namespace: demo
+spec:
+  template:
+    metadata:
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "false"
+    spec:
+      containers:
+        - name: wrk
+          image: kurtis/wrk:4.1.0
+          args:
+            - -d 1m
+            - -c 10
+            - -t 2
+            - http://library:8080/api/books
+      restartPolicy: Never
+  backoffLimit: 0
