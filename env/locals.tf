@@ -3,7 +3,7 @@ locals {
   default_timeouts = "5m"
   kind             = { version = "v1.21.12" }
   fluxcd           = {
-    version           = "v0.31.4"
+    version           = "v0.31.5"
     default_interval  = "5s"
     default_timeout   = "5m"
     source_controller = { host = "source-controller.${local.cluster_host}" }
@@ -14,5 +14,10 @@ locals {
   }
   opensearch = {
     host = "opensearch.${local.cluster_host}"
+  }
+  opentelemetry = {
+    operator = {
+      version = "v0.56.0"
+    }
   }
 }

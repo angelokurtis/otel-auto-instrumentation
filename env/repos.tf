@@ -87,3 +87,18 @@ YAML
 
   depends_on = [kubectl_manifest.fluxcd]
 }
+
+resource "kubectl_manifest" "ricardo_helm_repository" {
+  yaml_body = <<YAML
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: ricardo
+  namespace: ${kubernetes_namespace.fluxcd.metadata[0].name}
+spec:
+  interval: ${local.fluxcd.default_interval}
+  url: https://ricardo-ch.github.io/helm-charts/
+YAML
+
+  depends_on = [kubectl_manifest.fluxcd]
+}

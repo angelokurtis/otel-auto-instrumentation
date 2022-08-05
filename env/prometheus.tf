@@ -25,6 +25,23 @@ spec:
         enabled: true
         hosts:
           - prometheus.${local.cluster_host}
+      prometheusSpec:
+        logLevel: debug
+        serviceMonitorSelectorNilUsesHelmValues: false
+    prometheusOperator:
+      logLevel: debug
+    kubeControllerManager:
+      serviceMonitor:
+        enabled: false
+    kubeEtcd:
+      serviceMonitor:
+        enabled: false
+    kubeProxy:
+      serviceMonitor:
+        enabled: false
+    kubeScheduler:
+      serviceMonitor:
+        enabled: false
 YAML
 
   depends_on = [

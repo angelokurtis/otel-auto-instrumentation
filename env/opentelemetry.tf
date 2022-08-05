@@ -14,7 +14,13 @@ spec:
         kind: HelmRepository
         name: opentelemetry
         namespace: ${kubernetes_namespace.fluxcd.metadata[0].name}
-  values: {}
+  values:
+    manager:
+      image:
+        repository: ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator
+        tag: ${local.opentelemetry.operator.version}
+      serviceMonitor:
+        enabled: true
   dependsOn:
     - name: cert-manager
       namespace: ${kubernetes_namespace.cert_manager.metadata[0].name}
@@ -41,7 +47,7 @@ spec:
         protocols:
           grpc:
           http:
-    
+
     processors:
       batch:
         send_batch_size: 10000
@@ -56,7 +62,13 @@ spec:
       prometheus:
         endpoint: "0.0.0.0:8889"
 
+    extensions:
+      health_check:
+        endpoint: "0.0.0.0:13133"
+
     service:
+      extensions: [ health_check ]
+
       pipelines:
         traces:
           receivers: [ otlp ]
@@ -66,6 +78,9 @@ spec:
           receivers: [ otlp ]
           processors: [ batch ]
           exporters: [ prometheus ]
+  ports:
+    - port: 8889
+      name: metrics
 YAML
 
   depends_on = [
@@ -73,6 +88,78 @@ YAML
     kubectl_manifest.opentelemetry_operator_helm_release,
     kubernetes_job_v1.wait_opentelemetry_crds
   ]
+}
+
+resource "kubectl_manifest" "default_opentelemetry_collector_monitor" {
+  yaml_body = <<YAML
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: default-opentelemetry-collector
+  namespace: ${kubernetes_namespace.opentelemetry.metadata[0].name}
+spec:
+  endpoints:
+    - port: monitoring
+  namespaceSelector:
+    matchNames:
+      - ${kubernetes_namespace.opentelemetry.metadata[0].name}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: default-collector-monitoring
+YAML
+
+  depends_on = [kubectl_manifest.opentelemetry_collector]
+}
+
+
+resource "kubectl_manifest" "opentelemetry_collector_monitor" {
+  yaml_body = <<YAML
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: opentelemetry-collector
+  namespace: ${kubernetes_namespace.opentelemetry.metadata[0].name}
+spec:
+  endpoints:
+    - port: metrics
+  namespaceSelector:
+    matchNames:
+      - ${kubernetes_namespace.opentelemetry.metadata[0].name}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: opentelemetry-collector
+      app.kubernetes.io/name: default-collector
+YAML
+
+  depends_on = [kubectl_manifest.opentelemetry_collector]
+}
+
+resource "kubernetes_ingress_v1" "default_opentelemetry_collector" {
+  metadata {
+    name      = "default-opentelemetry-collector"
+    namespace = kubernetes_namespace.opentelemetry.metadata[0].name
+  }
+  spec {
+    rule {
+      host = "otelcol.${local.cluster_host}"
+      http {
+        path {
+          path      = "/"
+          path_type = "Prefix"
+          backend {
+            service {
+              name = "default-collector"
+              port {
+                name = "otlp-http"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  depends_on = [kubectl_manifest.opentelemetry_collector]
 }
 
 resource "kubernetes_job_v1" "wait_opentelemetry_crds" {

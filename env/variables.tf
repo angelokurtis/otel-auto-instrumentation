@@ -40,3 +40,7 @@ variable "opensearch_namespace" {
 variable "prometheus_namespace" {
   default = "prometheus"
 }
+
+variable "promlens_namespace" {
+  default = "promlens"
+}
