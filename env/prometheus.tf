@@ -42,6 +42,10 @@ spec:
     kubeScheduler:
       serviceMonitor:
         enabled: false
+    kubeStateMetrics:
+      enabled: false
+    nodeExporter:
+      enabled: false
 YAML
 
   depends_on = [
