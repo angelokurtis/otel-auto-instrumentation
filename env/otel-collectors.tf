@@ -4,7 +4,7 @@ locals {
       mode        = "deployment"
       config_file = "otel-collectors/otlp.yaml"
       env         = {
-        OTLP_ENDPOINT = "jaeger-collector.${kubernetes_namespace_v1.jaeger.metadata[0].name}.svc.cluster.local:${local.jaeger.collector.otlp.port}"
+        OTLP_ENDPOINT = "jaeger-collector.${kubernetes_namespace_v1.jaeger.metadata[0].name}.svc.cluster.local:4317"
       }
     }
   }

@@ -2,6 +2,7 @@ locals {
   helm_releases = {
     traefik                = local.traefik
     opentelemetry-operator = local.opentelemetry_operator
+    jaeger                 = local.jaeger
     cert-manager           = local.cert_manager
   }
 }
