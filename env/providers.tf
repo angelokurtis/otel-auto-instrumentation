@@ -1,60 +1,27 @@
 terraform {
   required_providers {
-    aws        = { source = "hashicorp/aws", version = ">= 4.21.0, < 4.22.0" }
-    docker     = { source = "kreuzwerker/docker", version = ">= 2.17.0, < 2.18.0" }
+    flux       = { source = "fluxcd/flux", version = ">= 0.16.0, < 0.17.0" }
+    helm       = { source = "hashicorp/helm", version = ">= 2.6.0, < 2.7.0" }
     kind       = { source = "tehcyx/kind", version = ">= 0.0.13, < 0.1.0" }
-    flux       = { source = "fluxcd/flux", version = ">= 0.15.3, < 0.16.0" }
-    kubernetes = { source = "hashicorp/kubernetes", version = ">= 2.12.1, < 2.13.0" }
     kubectl    = { source = "gavinbunney/kubectl", version = ">= 1.14.0, < 1.15.0" }
+    kubernetes = { source = "hashicorp/kubernetes", version = ">= 2.12.1, < 2.13.0" }
   }
   required_version = ">= 1.0"
 }
 
-provider "aws" {
-  access_key                  = "m0(k_4((355_k3y"
-  region                      = "us-east-1"
-  s3_use_path_style           = true
-  secret_key                  = "m0(k_53(r37_k3y"
-  skip_credentials_validation = true
-  skip_metadata_api_check     = true
-  skip_requesting_account_id  = true
+provider "flux" {}
 
-  endpoints {
-    apigateway     = "http://localhost:4566"
-    cloudformation = "http://localhost:4566"
-    cloudwatch     = "http://localhost:4566"
-    dynamodb       = "http://localhost:4566"
-    es             = "http://localhost:4566"
-    firehose       = "http://localhost:4566"
-    iam            = "http://localhost:4566"
-    kinesis        = "http://localhost:4566"
-    lambda         = "http://localhost:4566"
-    route53        = "http://localhost:4566"
-    redshift       = "http://localhost:4566"
-    s3             = "http://localhost:4566"
-    secretsmanager = "http://localhost:4566"
-    ses            = "http://localhost:4566"
-    sns            = "http://localhost:4566"
-    sqs            = "http://localhost:4566"
-    ssm            = "http://localhost:4566"
-    stepfunctions  = "http://localhost:4566"
-    sts            = "http://localhost:4566"
+provider "helm" {
+  kubernetes {
+    host = kind_cluster.otel.endpoint
+
+    client_certificate     = kind_cluster.otel.client_certificate
+    client_key             = kind_cluster.otel.client_key
+    cluster_ca_certificate = kind_cluster.otel.cluster_ca_certificate
   }
 }
 
-provider "docker" {}
-
 provider "kind" {}
-
-provider "flux" {}
-
-provider "kubernetes" {
-  host = kind_cluster.otel.endpoint
-
-  client_certificate     = kind_cluster.otel.client_certificate
-  client_key             = kind_cluster.otel.client_key
-  cluster_ca_certificate = kind_cluster.otel.cluster_ca_certificate
-}
 
 provider "kubectl" {
   host = kind_cluster.otel.endpoint
@@ -63,4 +30,12 @@ provider "kubectl" {
   client_key             = kind_cluster.otel.client_key
   cluster_ca_certificate = kind_cluster.otel.cluster_ca_certificate
   load_config_file       = false
+}
+
+provider "kubernetes" {
+  host = kind_cluster.otel.endpoint
+
+  client_certificate     = kind_cluster.otel.client_certificate
+  client_key             = kind_cluster.otel.client_key
+  cluster_ca_certificate = kind_cluster.otel.cluster_ca_certificate
 }

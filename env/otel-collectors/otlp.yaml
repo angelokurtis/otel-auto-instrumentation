@@ -1,0 +1,62 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+  # receiver that's just a dummy and never used; added to pass validation requiring at least one receiver in a pipeline.
+  otlp/spanmetrics:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:12345"
+
+processors:
+  batch:
+    send_batch_size: 10000
+    timeout: 1s
+
+  spanmetrics:
+    metrics_exporter: otlp/spanmetrics
+    latency_histogram_buckets: [ 100us, 1ms, 2ms, 6ms, 10ms, 100ms, 250ms ]
+    dimensions:
+      - name: http.method
+        default: GET
+      - name: http.status_code
+    dimensions_cache_size: 1000
+    aggregation_temporality: "AGGREGATION_TEMPORALITY_CUMULATIVE"
+
+exporters:
+  otlp:
+    endpoint: $OTLP_ENDPOINT
+    tls:
+      insecure: true
+
+  otlp/spanmetrics:
+    endpoint: "0.0.0.0:55677"
+    tls:
+      insecure: true
+
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+
+extensions:
+  health_check:
+    endpoint: "0.0.0.0:13133"
+
+service:
+  extensions: [ health_check ]
+
+  pipelines:
+    traces:
+      receivers: [ otlp ]
+      processors: [ batch ]
+      exporters: [ otlp ]
+
+    metrics/spanmetrics:
+      receivers: [ otlp/spanmetrics ]
+      exporters: [ otlp/spanmetrics ]
+
+    metrics:
+      receivers: [ otlp ]
+      processors: [ batch ]
+      exporters: [ prometheus ]
