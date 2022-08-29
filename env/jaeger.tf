@@ -6,6 +6,7 @@ locals {
     values          = {
       fullnameOverride = "jaeger-operator"
       rbac             = { clusterRole = true }
+      image            = { repository = "jaegertracing/jaeger-operator", tag = "1.37.0" }
       jaeger           = {
         create = true
         spec   = {
