@@ -2,14 +2,14 @@ locals {
   jaeger = {
     namespace       = kubernetes_namespace_v1.jaeger.metadata[0].name
     chart           = "jaeger-operator"
-    helm_repository = kubectl_manifest.helm_repository["jaegertracing"]
+    helm_repository = "jaegertracing"
     values          = {
       fullnameOverride = "jaeger-operator"
       rbac             = { clusterRole = true }
       jaeger           = {
         create = true
         spec   = {
-          ingress  = { enabled = true, hosts = ["jaeger.lvh.me"], ingressClassName = "traefik" }
+          ingress  = { enabled = true, hosts = ["jaeger.${local.cluster_host}"], ingressClassName = "traefik" }
           storage  = { type = "memory" }
           strategy = "allinone"
         }

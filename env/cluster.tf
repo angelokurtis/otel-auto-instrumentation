@@ -21,9 +21,22 @@ resource "kind_cluster" "otel" {
         })
       ]
 
-      extra_mounts {
-        container_path = "/var/lib/containerd"
-        host_path      = "/var/lib/docker/volumes/${var.docker_volume}/_data"
+      extra_port_mappings {
+        container_port = 32080
+        host_port      = 80
+        protocol       = "TCP"
+      }
+
+      extra_port_mappings {
+        container_port = 32443
+        host_port      = 443
+        protocol       = "TCP"
+      }
+
+      extra_port_mappings {
+        container_port = 32090
+        host_port      = 9000
+        protocol       = "TCP"
       }
     }
   }

@@ -1,13 +1,12 @@
 locals {
   opentelemetry_operator = {
     namespace       = kubernetes_namespace_v1.opentelemetry.metadata[0].name
-    chart           = "opentelemetry-operator"
-    helm_repository = kubectl_manifest.helm_repository["opentelemetry"]
+    helm_repository = "opentelemetry"
     values          = {
       manager = {
         image = {
           repository = "ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator"
-          tag        = "v0.58.0"
+          tag        = "0.58.0"
         }
       }
     }

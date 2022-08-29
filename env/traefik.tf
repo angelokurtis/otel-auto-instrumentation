@@ -1,8 +1,7 @@
 locals {
   traefik = {
     namespace       = kubernetes_namespace_v1.traefik.metadata[0].name
-    chart           = "traefik"
-    helm_repository = kubectl_manifest.helm_repository["traefik"]
+    helm_repository = "traefik"
     values          = {
       service      = { type = "NodePort" }
       ingressClass = { enabled = true, isDefaultClass = true }
