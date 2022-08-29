@@ -17,13 +17,9 @@ processors:
 
   spanmetrics:
     metrics_exporter: otlp/spanmetrics
-    latency_histogram_buckets: [ 100us, 1ms, 2ms, 6ms, 10ms, 100ms, 250ms ]
     dimensions:
       - name: http.method
-        default: GET
       - name: http.status_code
-    dimensions_cache_size: 1000
-    aggregation_temporality: "AGGREGATION_TEMPORALITY_CUMULATIVE"
 
 exporters:
   otlp:
@@ -32,7 +28,7 @@ exporters:
       insecure: true
 
   otlp/spanmetrics:
-    endpoint: "0.0.0.0:55677"
+    endpoint: "0.0.0.0:4317"
     tls:
       insecure: true
 
@@ -49,7 +45,7 @@ service:
   pipelines:
     traces:
       receivers: [ otlp ]
-      processors: [ batch ]
+      processors: [ spanmetrics, batch ]
       exporters: [ otlp ]
 
     metrics/spanmetrics:
@@ -58,5 +54,4 @@ service:
 
     metrics:
       receivers: [ otlp ]
-      processors: [ batch ]
       exporters: [ prometheus ]
