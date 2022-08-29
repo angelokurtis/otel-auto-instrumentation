@@ -23,11 +23,11 @@ build: ## Build the docker image.
 .PHONY: publish
 publish: ## Push docker image with the manager.
 	VERSION=$(shell ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout); \
-	kind load docker-image kurtis/library:$$VERSION --name otel
+	docker push kurtis/library:$$VERSION
 
 .PHONY: deploy
 deploy: build publish ## Deploy app to the K8s cluster specified in ~/.kube/config.
 	VERSION=$(shell ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout); \
-	cd k8s/base && kustomize edit set image library=kurtis/library:$$VERSION
-	cd k8s/base && kustomize edit set namespace $(NAMESPACE)
-	kustomize build k8s/base | kubectl apply -f -
+	cd k8s/overlays/staging && kustomize edit set image library=kurtis/library:$$VERSION
+	cd k8s/overlays/staging && kustomize edit set namespace $(NAMESPACE)
+	kustomize build k8s/overlays/staging | kubectl apply -f -
