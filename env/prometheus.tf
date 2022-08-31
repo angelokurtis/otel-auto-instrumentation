@@ -6,8 +6,11 @@ locals {
     values          = {
       nodeExporter     = { enabled = false }
       kubeStateMetrics = { enabled = false }
+      pushgateway      = { enabled = false }
+      alertmanager     = { enabled = false }
       server           = {
-        ingress = { enabled = true, hosts = ["prometheus.${local.cluster_host}"], ingressClassName = "traefik" }
+        extraFlags = ["web.enable-remote-write-receiver"]
+        ingress    = { enabled = true, hosts = ["prometheus.${local.cluster_host}"], ingressClassName = "traefik" }
       }
     }
   }

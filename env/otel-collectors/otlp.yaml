@@ -35,6 +35,9 @@ exporters:
   prometheus:
     endpoint: "0.0.0.0:8889"
 
+  prometheusremotewrite:
+    endpoint: $PROMETHEUS_PUSHGATEWAY_ENDPOINT
+
 extensions:
   health_check:
     endpoint: "0.0.0.0:13133"
@@ -54,4 +57,4 @@ service:
 
     metrics:
       receivers: [ otlp ]
-      exporters: [ prometheus ]
+      exporters: [ prometheus, prometheusremotewrite ]
