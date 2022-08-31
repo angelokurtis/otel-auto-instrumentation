@@ -5,6 +5,7 @@ locals {
     jaeger                 = local.jaeger
     cert-manager           = local.cert_manager
     prometheus             = local.prometheus
+    promlens               = local.promlens
   }
 }
 

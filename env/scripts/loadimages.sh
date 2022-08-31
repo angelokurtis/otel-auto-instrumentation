@@ -21,4 +21,7 @@ loadImage ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:0
 loadImage gcr.io/kubebuilder/kube-rbac-proxy:v0.11.0
 loadImage docker.io/kurtis/otel-collector:v1.0.3
 loadImage docker.io/bitnami/kubectl:1.21
+loadImage jimmidyson/configmap-reload:v0.5.0
+loadImage quay.io/prometheus/prometheus:v2.36.2
+loadImage promlabs/promlens:v1.1.0
 loadImage traefik:2.8.0

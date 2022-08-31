@@ -32,9 +32,6 @@ exporters:
     tls:
       insecure: true
 
-  prometheus:
-    endpoint: "0.0.0.0:8889"
-
   prometheusremotewrite:
     endpoint: $PROMETHEUS_PUSHGATEWAY_ENDPOINT
 
@@ -57,4 +54,4 @@ service:
 
     metrics:
       receivers: [ otlp ]
-      exporters: [ prometheus, prometheusremotewrite ]
+      exporters: [ prometheusremotewrite ]
