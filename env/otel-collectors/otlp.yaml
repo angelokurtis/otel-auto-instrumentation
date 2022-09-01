@@ -2,7 +2,9 @@ receivers:
   otlp:
     protocols:
       grpc:
+        endpoint: "0.0.0.0:4317"
       http:
+        endpoint: "0.0.0.0:4318"
 
   # receiver that's just a dummy and never used; added to pass validation requiring at least one receiver in a pipeline.
   otlp/spanmetrics:
@@ -22,8 +24,8 @@ processors:
       - name: http.status_code
 
 exporters:
-  otlp:
-    endpoint: $OTLP_ENDPOINT
+  otlp/jaeger:
+    endpoint: $JAEGER_OTLP_ENDPOINT
     tls:
       insecure: true
 
@@ -40,13 +42,17 @@ extensions:
     endpoint: "0.0.0.0:13133"
 
 service:
+  telemetry:
+    logs:
+      level: "debug"
+
   extensions: [ health_check ]
 
   pipelines:
     traces:
       receivers: [ otlp ]
       processors: [ spanmetrics, batch ]
-      exporters: [ otlp ]
+      exporters: [ otlp/jaeger ]
 
     metrics/spanmetrics:
       receivers: [ otlp/spanmetrics ]

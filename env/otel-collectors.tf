@@ -4,7 +4,7 @@ locals {
       config_file = "otel-collectors/otlp.yaml"
       ports       = [{ name = "prometheus", port = 8889, targetPort = 8889 }]
       env         = {
-        OTLP_ENDPOINT                   = "jaeger-collector.${kubernetes_namespace_v1.jaeger.metadata[0].name}.svc.cluster.local:4317"
+        JAEGER_OTLP_ENDPOINT            = "jaeger-collector.${kubernetes_namespace_v1.jaeger.metadata[0].name}.svc.cluster.local:4317"
         PROMETHEUS_PUSHGATEWAY_ENDPOINT = "prometheus-server.${kubernetes_namespace_v1.prometheus.metadata[0].name}.svc.cluster.local:80"
       }
     }
