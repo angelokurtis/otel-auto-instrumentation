@@ -19,16 +19,27 @@ resource "kubectl_manifest" "helm_release" {
     metadata   = { name = each.key, namespace = each.value.namespace }
     spec       = {
       chart = {
-        spec = {
-          chart             = try(each.value.chart, each.key)
-          reconcileStrategy = "ChartVersion"
-          version           = try(each.value.version, "*")
-          sourceRef         = {
-            kind      = "HelmRepository"
-            name      = kubectl_manifest.helm_repository[each.value.helm_repository].name
-            namespace = kubectl_manifest.helm_repository[each.value.helm_repository].namespace
+        spec = try(
+          {
+            chart             = try(each.value.chart, each.key)
+            reconcileStrategy = "ChartVersion"
+            version           = try(each.value.version, "*")
+            sourceRef         = {
+              kind      = "HelmRepository"
+              name      = kubectl_manifest.helm_repository[each.value.helm_repository].name
+              namespace = kubectl_manifest.helm_repository[each.value.helm_repository].namespace
+            }
+          },
+          {
+            chart             = try(each.value.chart, each.key)
+            reconcileStrategy = "Revision"
+            sourceRef         = {
+              kind      = "GitRepository"
+              name      = kubectl_manifest.git_repository[each.value.git_repository].name
+              namespace = kubectl_manifest.git_repository[each.value.git_repository].namespace
+            }
           }
-        }
+        )
       }
       interval  = local.fluxcd.default_interval
       values    = try(each.value.values, {})

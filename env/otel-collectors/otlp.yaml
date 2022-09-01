@@ -28,12 +28,12 @@ exporters:
       insecure: true
 
   otlp/spanmetrics:
-    endpoint: "0.0.0.0:4317"
+    endpoint: "localhost:4317"
     tls:
       insecure: true
 
   prometheusremotewrite:
-    endpoint: $PROMETHEUS_PUSHGATEWAY_ENDPOINT
+    endpoint: http://$PROMETHEUS_PUSHGATEWAY_ENDPOINT/api/v1/write
 
 extensions:
   health_check:
