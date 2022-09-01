@@ -37,6 +37,7 @@ resource "kubernetes_ingress_v1" "jaeger" {
     namespace = kubernetes_namespace_v1.jaeger.metadata[0].name
   }
   spec {
+    ingress_class_name = "traefik"
     rule {
       host = "jaeger.${local.cluster_host}"
       http {
