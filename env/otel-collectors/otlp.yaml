@@ -23,6 +23,10 @@ processors:
       - name: http.method
       - name: http.status_code
 
+  probabilistic_sampler:
+    hash_seed: 22
+    sampling_percentage: 1.0
+
 exporters:
   otlp/jaeger:
     endpoint: $JAEGER_OTLP_ENDPOINT
@@ -51,7 +55,7 @@ service:
   pipelines:
     traces:
       receivers: [ otlp ]
-      processors: [ spanmetrics, batch ]
+      processors: [ spanmetrics, batch, probabilistic_sampler ]
       exporters: [ otlp/jaeger ]
 
     metrics/spanmetrics:
