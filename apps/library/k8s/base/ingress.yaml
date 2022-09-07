@@ -4,7 +4,6 @@ metadata:
   name: library
   namespace: default
 spec:
-  ingressClassName: traefik
   rules:
     - host: library.lvh.me
       http:
