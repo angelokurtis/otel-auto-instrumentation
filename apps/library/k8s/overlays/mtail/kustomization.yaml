@@ -3,8 +3,8 @@ kind: Kustomization
 resources:
   - ../../base
 patchesStrategicMerge:
-  - deployment.yaml
+  - ingress.yaml
 configMapGenerator:
-  - name: otel
+  - name: mtail
     envs:
-      - staging.env
+      - mtail.env

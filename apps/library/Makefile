@@ -4,6 +4,7 @@ ifneq (,$(wildcard ./.env))
 endif
 
 NAMESPACE = demo
+OVERLAY = mtail
 
 .PHONY: help
 help: ## Display this help.
@@ -28,6 +29,6 @@ publish: ## Push docker image with the manager.
 .PHONY: deploy
 deploy: build publish ## Deploy app to the K8s cluster specified in ~/.kube/config.
 	VERSION=$(shell ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout); \
-	cd k8s/overlays/staging && kustomize edit set image kurtis/library=kurtis/library:$$VERSION
-	cd k8s/overlays/staging && kustomize edit set namespace $(NAMESPACE)
-	kustomize build k8s/overlays/staging | kubectl apply -f -
+	cd k8s/overlays/$(OVERLAY) && kustomize edit set image kurtis/library=kurtis/library:$$VERSION
+	cd k8s/overlays/$(OVERLAY) && kustomize edit set namespace $(NAMESPACE)
+	kustomize build k8s/overlays/$(OVERLAY) | kubectl apply -f -
