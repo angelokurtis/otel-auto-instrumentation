@@ -1,8 +1,8 @@
 locals {
   fluxcd = {
-    version          = "v0.32.0"
+    version          = "v0.34.0"
     namespace        = "fluxcd"
-    default_interval = "5s"
+    default_interval = "60s"
     default_timeout  = "5m"
   }
 }
@@ -12,7 +12,7 @@ data "flux_install" "main" {
   target_path    = "fluxcd"
   namespace      = local.fluxcd.namespace
   network_policy = false
-  components     = ["source-controller", "helm-controller"]
+  components     = ["source-controller", "kustomize-controller", "helm-controller"]
 }
 
 data "kubectl_file_documents" "fluxcd" {

@@ -1,6 +1,6 @@
 locals {
   cluster_host = var.load_balancer_address == "127.0.0.1" ? "lvh.me" : "${join("", formatlist("%02x", split(".", var.load_balancer_address)))}.nip.io"
-  kind         = { version = "v1.21.12" }
+  kind         = { version = "v1.23.12" }
 }
 
 resource "kind_cluster" "otel" {
@@ -13,10 +13,20 @@ resource "kind_cluster" "otel" {
     node {
       role  = "control-plane"
       image = "kindest/node:${local.kind.version}"
+    }
+
+    node {
+      role  = "worker"
+      image = "kindest/node:${local.kind.version}"
+    }
+
+    node {
+      role  = "worker"
+      image = "kindest/node:${local.kind.version}"
 
       kubeadm_config_patches = [
         yamlencode({
-          kind             = "InitConfiguration"
+          kind             = "JoinConfiguration"
           nodeRegistration = { kubeletExtraArgs = { "node-labels" = "ingress-ready=true" } }
         })
       ]
@@ -40,8 +50,4 @@ resource "kind_cluster" "otel" {
       }
     }
   }
-}
-
-data "kubectl_server_version" "current" {
-  depends_on = [kind_cluster.otel]
 }

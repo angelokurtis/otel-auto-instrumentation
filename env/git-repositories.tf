@@ -1,8 +1,8 @@
 locals {
   git_repositories = {
-    jaeger-helm-charts = {
-      repository = "https://github.com/angelokurtis/jaeger-helm-charts"
-      ref        = { branch = "otlp-enabled-on-allinone" }
+    football-bets = {
+      repository = "https://github.com/angelokurtis/football-bets"
+      ref        = { branch = "multiverse/java-spring" }
     }
   }
 }

@@ -23,7 +23,7 @@ quickstart: init ## Initialize Terraform configurations
 plan: ## Starts a Kubernetes cluster running local using Docker containers and apply all solution components
 	terraform plan
 
-.PHONY: up
+.PHONY: apply
 apply: ## Starts a Kubernetes cluster running local using Docker containers and apply all solution components
 	terraform apply -auto-approve
 

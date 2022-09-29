@@ -1,11 +1,11 @@
 locals {
   helm_repositories = {
-    traefik              = { repository = "https://helm.traefik.io/traefik" }
-    jetstack             = { repository = "https://charts.jetstack.io" }
+    grafana              = { repository = "https://grafana.github.io/helm-charts" }
+    ingress-traefik      = { repository = "https://helm.traefik.io/traefik" }
     jaegertracing        = { repository = "https://jaegertracing.github.io/helm-charts" }
+    jetstack             = { repository = "https://charts.jetstack.io" }
     opentelemetry        = { repository = "https://open-telemetry.github.io/opentelemetry-helm-charts" }
     prometheus-community = { repository = "https://prometheus-community.github.io/helm-charts" }
-    ricardo              = { repository = "https://ricardo-ch.github.io/helm-charts" }
   }
 }
 
