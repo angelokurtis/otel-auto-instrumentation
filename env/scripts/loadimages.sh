@@ -12,9 +12,9 @@ loadImage(){
 
 loadImage docker.io/bitnami/kubectl:1.23
 loadImage gcr.io/kubebuilder/kube-rbac-proxy:v0.11.0
-loadImage ghcr.io/fluxcd/helm-controller:v0.24.0
-loadImage ghcr.io/fluxcd/kustomize-controller:v0.28.0
-loadImage ghcr.io/fluxcd/source-controller:v0.29.0
+loadImage ghcr.io/fluxcd/helm-controller:v0.25.0
+loadImage ghcr.io/fluxcd/kustomize-controller:v0.29.0
+loadImage ghcr.io/fluxcd/source-controller:v0.30.0
 loadImage ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:0.60.0
 loadImage grafana/grafana:9.1.6
 loadImage jaegertracing/all-in-one:1.38.0
