@@ -19,6 +19,11 @@ loadImage ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:0
 loadImage grafana/grafana:9.1.6
 loadImage jaegertracing/all-in-one:1.38.0
 loadImage jimmidyson/configmap-reload:v0.7.1
+loadImage kurtis/bets:1.0.0-java-spring
+loadImage kurtis/championships:1.0.0-java-spring
+loadImage kurtis/matches:1.0.0-java-spring
+loadImage kurtis/otel-collector:v1.0.8
+loadImage kurtis/teams:1.0.0-java-spring
 loadImage quay.io/jetstack/cert-manager-cainjector:v1.9.1
 loadImage quay.io/jetstack/cert-manager-controller:v1.9.1
 loadImage quay.io/jetstack/cert-manager-webhook:v1.9.1
