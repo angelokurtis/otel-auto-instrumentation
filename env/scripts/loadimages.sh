@@ -5,9 +5,9 @@ set -e
 loadImage(){
   t=$1
   if [[ "$(docker images -q $t 2> /dev/null)" == "" ]]; then
-     (set -x; docker pull $t)
+     (set -x; docker pull --platform linux/amd64 $t)
   fi
-  (set -x; kind load docker-image --name otel $t)
+  (set -x; kind load docker-image --name otel $t --nodes otel-worker)
 }
 
 loadImage docker.io/bitnami/kubectl:1.23

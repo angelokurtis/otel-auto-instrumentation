@@ -18,11 +18,6 @@ resource "kind_cluster" "otel" {
     node {
       role  = "worker"
       image = "kindest/node:${local.kind.version}"
-    }
-
-    node {
-      role  = "worker"
-      image = "kindest/node:${local.kind.version}"
 
       kubeadm_config_patches = [
         yamlencode({
