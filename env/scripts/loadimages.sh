@@ -16,7 +16,7 @@ loadImage ghcr.io/fluxcd/helm-controller:v0.25.0
 loadImage ghcr.io/fluxcd/kustomize-controller:v0.29.0
 loadImage ghcr.io/fluxcd/source-controller:v0.30.0
 loadImage ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:0.60.0
-loadImage grafana/grafana:9.1.6
+loadImage grafana/grafana:9.1.8
 loadImage jaegertracing/all-in-one:1.38.0
 loadImage jimmidyson/configmap-reload:v0.7.1
 loadImage kurtis/bets:1.0.0-java-spring
