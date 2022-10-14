@@ -19,6 +19,11 @@ resource "kind_cluster" "otel" {
       role  = "worker"
       image = "kindest/node:${local.kind.version}"
 
+      extra_mounts {
+        container_path = "/var/lib/containerd"
+        host_path      = "/var/lib/docker/volumes/${var.docker_volume}/_data"
+      }
+
       kubeadm_config_patches = [
         yamlencode({
           kind             = "JoinConfiguration"

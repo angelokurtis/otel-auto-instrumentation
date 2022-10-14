@@ -1,5 +1,5 @@
 locals {
-  wait_timeouts = "10m"
+  wait_timeouts = "30m"
 }
 
 resource "kubernetes_job_v1" "wait_helm_release" {
