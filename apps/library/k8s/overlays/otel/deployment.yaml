@@ -11,3 +11,13 @@ spec:
           envFrom:
             - configMapRef:
                 name: otel
+          livenessProbe:
+            initialDelaySeconds: 60
+            httpGet:
+              path: /actuator/health
+              port: http
+          readinessProbe:
+            initialDelaySeconds: 60
+            httpGet:
+              path: /actuator/health
+              port: http

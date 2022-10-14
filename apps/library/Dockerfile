@@ -6,9 +6,9 @@ COPY pom.xml .
 COPY src src
 RUN --mount=type=cache,target=/root/.m2 ./mvnw -B package
 
-FROM gcr.io/distroless/java17:nonroot
+FROM amazoncorretto:17-alpine3.16
 
 COPY --from=build target/library.jar .
 EXPOSE 8080
 
-CMD ["library.jar"]
+CMD ["java", "-jar", "library.jar"]

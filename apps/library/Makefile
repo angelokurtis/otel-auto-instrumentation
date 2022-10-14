@@ -4,7 +4,7 @@ ifneq (,$(wildcard ./.env))
 endif
 
 NAMESPACE = demo
-OVERLAY = mtail
+OVERLAY = otel
 
 .PHONY: help
 help: ## Display this help.
